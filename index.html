@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>元宇说&鲡喵烘焙体重管理测评系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2D6A4F',
+            secondary: '#D9AE94',
+            tertiary: '#F5EBE0',
+            dark: '#333333',
+            light: '#F9F7F3'
+          },
+          fontFamily: {
+            sans: ['Noto Sans SC', 'sans-serif'],
+            serif: ['Noto Serif SC', 'serif']
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      .bg-texture {
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%232d6a4f' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+      .transition-custom {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-tertiary bg-texture min-h-screen text-dark font-sans">
+  <!-- 联系方式弹窗 -->
+  <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden modal-backdrop">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-primary">联系方式</h3>
+        <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <p class="flex items-center"><i class="fa fa-phone text-primary mr-3"></i> 联系电话：19302871359</p>
+        <p class="flex items-center"><i class="fa fa-weixin text-primary mr-3"></i> 联系微信：19302871359</p>
+      </div>
+      <div class="mt-6 text-center">
+        <button id="confirm-contact" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg transition-colors">
+          知道了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 顶部导航 -->
+  <header class="bg-primary text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-leaf text-2xl"></i>
+        <h1 class="text-xl md:text-2xl font-serif font-bold">元宇说&鲡喵烘焙体重管理测评系统</h1>
+      </div>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#" class="hover:text-secondary transition-colors"><i class="fa fa-question-circle mr-1"></i> 测评说明</a>
+        <a href="#" id="contact-link" class="hover:text-secondary transition-colors"><i class="fa fa-envelope mr-1"></i> 联系我们</a>
+      </div>
+      <button class="md:hidden text-white focus:outline-none">
+        <i class="fa fa-bars text-xl"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- 步骤指示器 -->
+    <div class="mb-10">
+      <div class="flex justify-between items-center max-w-3xl mx-auto">
+        <div id="step-indicator-1" class="flex flex-col items-center">
+          <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">1</div>
+          <span class="text-sm hidden md:block">个人信息</span>
+        </div>
+        <div class="flex-1 h-1 mx-2 bg-gray-300">
+          <div id="progress-1-2" class="h-full bg-primary w-0 transition-all duration-500"></div>
+        </div>
+        <div id="step-indicator-2" class="flex flex-col items-center">
+          <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-2">2</div>
+          <span class="text-sm hidden md:block">BMI计算</span>
+        </div>
+        <div class="flex-1 h-1 mx-2 bg-gray-300">
+          <div id="progress-2-3" class="h-full bg-primary w-0 transition-all duration-500"></div>
+        </div>
+        <div id="step-indicator-3" class="flex flex-col items-center">
+          <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-2">3</div>
+          <span class="text-sm hidden md:block">体质测评</span>
+        </div>
+        <div class="flex-1 h-1 mx-2 bg-gray-300">
+          <div id="progress-3-4" class="h-full bg-primary w-0 transition-all duration-500"></div>
+        </div>
+        <div id="step-indicator-4" class="flex flex-col items-center">
+          <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-2">4</div>
+          <span class="text-sm hidden md:block">测评结果</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤内容区域 -->
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <!-- 步骤1: 个人信息 -->
+      <div id="step-1" class="p-6 md:p-8 transition-custom">
+        <h2 class="text-2xl md:text-3xl font-serif font-bold text-primary mb-6 pb-2 border-b border-gray-200">个人信息</h2>
+        <form id="personal-info-form" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label for="name" class="block text-gray-700 mb-2 font-medium">姓名</label>
+              <input type="text" id="name" name="name" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="请输入您的姓名">
+            </div>
+            <div>
+              <label for="age" class="block text-gray-700 mb-2 font-medium">年龄</label>
+              <input type="number" id="age" name="age" required min="1" max="120"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="请输入您的年龄">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 mb-2 font-medium">性别</label>
+            <div class="flex space-x-6">
+              <label class="inline-flex items-center">
+                <input type="radio" name="gender" value="male" required class="form-radio text-primary h-5 w-5">
+                <span class="ml-2">男</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="gender" value="female" class="form-radio text-primary h-5 w-5">
+                <span class="ml-2">女</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label for="diet-preference" class="block text-gray-700 mb-2 font-medium">饮食偏好</label>
+            <select id="diet-preference" name="dietPreference" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              <option value="meat">偏爱肉类</option>
+              <option value="vegetable">偏爱蔬菜</option>
+              <option value="balanced">均衡饮食</option>
+              <option value="sweet">偏爱甜食</option>
+              <option value="spicy">偏爱辛辣</option>
+              <option value="greasy">偏爱油腻</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="expected-body" class="block text-gray-700 mb-2 font-medium">预期身材和状态</label>
+            <select id="expected-body" name="expectedBody" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              <option value="healthy">健康即可</option>
+              <option value="perfect">完美身材 (BMI 22.5)</option>
+              <option value="photogenic">上镜身材 (BMI 22)</option>
+              <option value="energetic">精力充沛</option>
+              <option value="slim">明显变瘦</option>
+            </select>
+          </div>
+
+          <div class="pt-4 flex justify-end">
+            <button type="button" id="to-step-2" 
+              class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow transition-all flex items-center">
+              下一步 <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 步骤2: BMI计算 -->
+      <div id="step-2" class="p-6 md:p-8 hidden transition-custom">
+        <h2 class="text-2xl md:text-3xl font-serif font-bold text-primary mb-6 pb-2 border-b border-gray-200">BMI计算</h2>
+        <p class="text-gray-600 mb-6">请输入您的身高和体重，我们将为您计算BMI指数</p>
+        
+        <form id="bmi-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="height" class="block text-gray-700 mb-2 font-medium">身高 (厘米)</label>
+              <input type="number" id="height" name="height" required min="50" max="250" step="0.1"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="请输入您的身高">
+            </div>
+            <div>
+              <label for="weight" class="block text-gray-700 mb-2 font-medium">体重 (公斤)</label>
+              <input type="number" id="weight" name="weight" required min="10" max="300" step="0.1"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="请输入您的体重">
+            </div>
+          </div>
+
+          <div id="bmi-result" class="hidden p-4 bg-tertiary rounded-lg border border-secondary/30">
+            <h3 class="font-medium text-lg mb-2">您的BMI指数: <span id="bmi-value" class="font-bold text-primary"></span></h3>
+            <p id="bmi-category" class="text-gray-700"></p>
+            <div class="mt-3">
+              <p class="text-sm text-gray-600"><i class="fa fa-info-circle text-primary mr-1"></i> 健康体重BMI: 24 | 完美身材BMI: 22.5 | 上镜身材BMI: 22</p>
+            </div>
+          </div>
+
+          <div class="pt-4 flex justify-between">
+            <button type="button" id="back-to-step-1" 
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg shadow transition-all flex items-center">
+              <i class="fa fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button type="button" id="calculate-bmi" 
+              class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow transition-all flex items-center">
+              计算BMI <i class="fa fa-calculator ml-2"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 步骤3: 体质测评 -->
+      <div id="step-3" class="p-6 md:p-8 hidden transition-custom">
+        <div class="flex justify-between items-center mb-6 pb-2 border-b border-gray-200">
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-primary">体质测评</h2>
+          <div class="bg-tertiary px-3 py-1 rounded-full text-sm">
+            <span id="question-number">1</span>/15
+          </div>
+        </div>
+        
+        <div id="question-container" class="mb-8">
+          <!-- 问题将通过JS动态加载 -->
+        </div>
+        
+        <div class="pt-4 flex justify-between">
+          <button type="button" id="prev-question" disabled
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg shadow transition-all flex items-center opacity-50 cursor-not-allowed">
+            <i class="fa fa-arrow-left mr-2"></i> 上一题
+          </button>
+          <button type="button" id="next-question" 
+            class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow transition-all flex items-center">
+            下一题 <i class="fa fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 步骤4: 测评结果 -->
+      <div id="step-4" class="p-6 md:p-8 hidden transition-custom">
+        <h2 class="text-2xl md:text-3xl font-serif font-bold text-primary mb-6 pb-2 border-b border-gray-200">测评结果</h2>
+        
+        <div id="result-container" class="space-y-6">
+          <!-- 结果将通过JS动态加载 -->
+        </div>
+        
+        <div id="result-image-container" class="hidden my-8 p-4 bg-tertiary rounded-lg border border-secondary/30">
+          <h3 class="font-medium text-lg mb-4 text-center">您的体质测评报告</h3>
+          <div id="result-for-image" class="bg-white p-6 rounded-lg shadow-md">
+            <!-- 这里的内容将被转换为图片 -->
+          </div>
+          <div class="mt-4 text-center">
+            <button id="download-result" class="bg-secondary hover:bg-secondary/90 text-dark px-6 py-2 rounded-lg shadow transition-all inline-flex items-center">
+              <i class="fa fa-download mr-2"></i> 下载测评报告
+            </button>
+          </div>
+        </div>
+        
+        <div class="pt-4 flex justify-center">
+          <button type="button" id="restart-test" 
+            class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow transition-all flex items-center">
+            <i class="fa fa-refresh mr-2"></i> 重新测评
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-primary text-white mt-12 py-8">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <div class="flex items-center space-x-2 mb-2">
+            <i class="fa fa-leaf"></i>
+            <span class="font-serif font-bold">元宇说&鲡喵烘焙体重管理测评系统</span>
+          </div>
+          <p class="text-sm text-white/80">专业体重管理方案测评系统</p>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" id="wechat-link" class="hover:text-secondary transition-colors"><i class="fa fa-weixin text-xl"></i></a>
+        </div>
+      </div>
+      <div class="border-t border-white/20 mt-6 pt-6 text-center text-sm text-white/70">
+        <p>© 2023 元宇说&鲡喵烘焙体重管理测评系统 - 仅供参考，不构成医疗建议</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 问题库
+    const questions = [
+      {
+        id: 1,
+        text: "您是否经常感到饥饿，食量较大？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 1 // 胃热火郁
+      },
+      {
+        id: 2,
+        text: "您的大便是否经常不爽或干结？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 1
+      },
+      {
+        id: 3,
+        text: "您是否经常感到口干口苦，喜欢喝水？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 1
+      },
+      {
+        id: 4,
+        text: "您是否感觉身体沉重，肢体困倦？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 2 // 痰湿内盛
+      },
+      {
+        id: 5,
+        text: "您是否喜欢吃肥甘厚味、醇酒等食物？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 2
+      },
+      {
+        id: 6,
+        text: "您的大便是否经常黏滞不爽？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 2
+      },
+      {
+        id: 7,
+        text: "您是否经常感到胸闷胁满，喜欢叹气？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 3 // 气郁血瘀
+      },
+      {
+        id: 8,
+        text: "您的面色是否偏晦暗，嘴唇偏暗？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 3
+      },
+      {
+        id: 9,
+        text: "您是否有月经不调（女性）或性欲下降（男性）的情况？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 3
+      },
+      {
+        id: 10,
+        text: "您是否经常感到神疲乏力，身体困重？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 4 // 脾虚不运
+      },
+      {
+        id: 11,
+        text: "您是否有四肢轻度浮肿的情况，早晨轻傍晚重？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 4
+      },
+      {
+        id: 12,
+        text: "您是否有暴饮暴食的历史？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 4
+      },
+      {
+        id: 13,
+        text: "您是否经常感到疲劳，四肢不温甚至厥冷？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 5 // 脾肾阳虚
+      },
+      {
+        id: 14,
+        text: "您是否喜欢喝热饮？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 5
+      },
+      {
+        id: 15,
+        text: "您的小便是否清长？",
+        options: [
+          { value: 0, text: "从不" },
+          { value: 1, text: "偶尔" },
+          { value: 2, text: "有时" },
+          { value: 3, text: "经常" },
+          { value: 4, text: "总是" }
+        ],
+        type: 5
+      }
+    ];
+
+    // 方案数据
+    const plans = {
+      1: {
+        name: "胃热火郁",
+        diet: "1. 宜食清热泻火食物：如苦瓜、黄瓜、冬瓜、西瓜、梨、绿豆等。<br>2. 忌食辛辣刺激、温热性食物：如辣椒、花椒、羊肉、狗肉等。<br>3. 饮食宜清淡，定时定量，避免暴饮暴食。<br>4. 可适量饮用菊花茶、金银花茶清热降火。",
+        exercise: "1. 适合中等强度的有氧运动：如快走、慢跑、游泳、骑自行车等，每次30-45分钟，每周5次。<br>2. 避免在高温环境下运动，运动后及时补充水分。<br>3. 可配合一些清热的功法，如八段锦中的'调理脾胃须单举'式。",
+        acupoint: "1. 内庭穴：位于足背第2、3趾间缝纹端，可清胃泻火。<br>2. 合谷穴：手背第1、2掌骨间，靠近第2掌骨的中点处，可疏风清热。<br>3. 足三里：位于外膝眼下3寸，胫骨外侧约1横指处，可健脾和胃。<br>每个穴位每次按摩3-5分钟，每天1-2次。"
+      },
+      2: {
+        name: "痰湿内盛",
+        diet: "1. 宜食健脾利湿食物：如薏米、赤小豆、山药、冬瓜、白萝卜、洋葱等。<br>2. 忌食肥甘厚味、生冷油腻食物：如油炸食品、肥肉、甜腻点心等。<br>3. 饮食宜温热，避免生冷食物，少饮酒。<br>4. 可饮用薏米红豆茶、陈皮茶帮助祛湿化痰。",
+        exercise: "1. 适合较长时间的有氧运动：如快走、慢跑、太极拳、瑜伽等，每次40-60分钟，每周5-6次。<br>2. 适当增加户外活动，多晒太阳。<br>3. 可练习八段锦中的'双手托天理三焦'和'调理脾胃须单举'式。",
+        acupoint: "1. 丰隆穴：位于外踝尖上8寸，胫骨前肌的外缘，可化痰湿。<br>2. 阴陵泉：位于胫骨内侧髁下方凹陷处，可健脾利湿。<br>3. 中脘穴：位于上腹部，脐中上4寸，可和胃健脾。<br>每个穴位每次按摩3-5分钟，每天1-2次，以酸胀感为宜。"
+      },
+      3: {
+        name: "气郁血瘀",
+        diet: "1. 宜食理气活血食物：如陈皮、佛手、玫瑰花、山楂、桃仁、黑豆等。<br>2. 忌食生冷、油腻、过咸食物。<br>3. 可饮用玫瑰花茶、陈皮茶理气解郁。<br>4. 饮食宜温热，避免过冷食物，保持饮食规律。",
+        exercise: "1. 适合中等强度的有氧运动结合放松训练：如快走、慢跑、舞蹈、太极拳等，每次30-45分钟，每周5次。<br>2. 配合深呼吸、冥想等放松训练，缓解压力。<br>3. 可练习八段锦中的'左右开弓似射雕'和'双手攀足固肾腰'式。",
+        acupoint: "1. 太冲穴：位于足背第1、2跖骨结合部前方凹陷处，可疏肝解郁。<br>2. 血海穴：位于屈膝时髌骨内上缘上2寸，可活血化瘀。<br>3. 膻中穴：位于胸部正中线，两乳头连线中点，可理气宽胸。<br>每个穴位每次按摩3-5分钟，每天1-2次。"
+      },
+      4: {
+        name: "脾虚不运",
+        diet: "1. 宜食健脾益气食物：如山药、莲子、芡实、薏米、南瓜、小米等。<br>2. 忌食生冷、油腻、不易消化食物。<br>3. 饮食宜温热，少食多餐，避免暴饮暴食。<br>4. 可食用小米粥、山药粥等健脾养胃的粥品。",
+        exercise: "1. 适合温和的有氧运动：如散步、慢跑、太极拳、瑜伽等，每次20-30分钟，每周4-5次。<br>2. 避免过度劳累，运动强度不宜过大。<br>3. 可练习八段锦中的'调理脾胃须单举'和'两手攀足固肾腰'式。",
+        acupoint: "1. 足三里：位于外膝眼下3寸，胫骨外侧约1横指处，可健脾和胃。<br>2. 脾俞穴：位于背部第11胸椎棘突下，旁开1.5寸，可健脾益气。<br>3. 太白穴：位于足内侧缘，第1跖骨关节后下方赤白肉际凹陷处，可补脾益气。<br>每个穴位每次按摩3-5分钟，每天1-2次。"
+      },
+      5: {
+        name: "脾肾阳虚",
+        diet: "1. 宜食温补脾肾食物：如羊肉、牛肉、鸡肉、韭菜、核桃、桂圆等。<br>2. 忌食生冷寒凉食物：如西瓜、梨、苦瓜、绿豆等。<br>3. 饮食宜温热，避免生冷食物和冷饮。<br>4. 可饮用生姜红枣茶、桂圆茶等温阳饮品。",
+        exercise: "1. 适合温和的有氧运动：如快走、慢跑、太极拳等，每次20-30分钟，每周4-5次。<br>2. 最好在白天或气温较高时运动，避免在寒冷环境中锻炼。<br>3. 可练习八段锦中的'两手攀足固肾腰'和'攒拳怒目增气力'式。",
+        acupoint: "1. 关元穴：位于下腹部，脐中下3寸，可温补肾阳。<br>2. 命门穴：位于腰部，后正中线上，第2腰椎棘突下凹陷中，可温肾壮阳。<br>3. 足三里：位于外膝眼下3寸，胫骨外侧约1横指处，可健脾益气。<br>每个穴位每次按摩3-5分钟，每天1-2次，可配合艾灸效果更佳。"
+      }
+    };
+
+    // 全局变量
+    let currentStep = 1;
+    let currentQuestion = 0;
+    let answers = [];
+    let bmiValue = null;
+    let height = null;
+    let weight = null;
+
+    // DOM元素
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const step3 = document.getElementById('step-3');
+    const step4 = document.getElementById('step-4');
+    const questionContainer = document.getElementById('question-container');
+    const questionNumber = document.getElementById('question-number');
+    const prevQuestionBtn = document.getElementById('prev-question');
+    const nextQuestionBtn = document.getElementById('next-question');
+    const resultContainer = document.getElementById('result-container');
+    const resultForImage = document.getElementById('result-for-image');
+    const resultImageContainer = document.getElementById('result-image-container');
+    const contactModal = document.getElementById('contact-modal');
+    const contactLink = document.getElementById('contact-link');
+    const closeModal = document.getElementById('close-modal');
+    const confirmContact = document.getElementById('confirm-contact');
+    const wechatLink = document.getElementById('wechat-link');
+
+    // 联系方式弹窗控制
+    contactLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      contactModal.classList.remove('hidden');
+    });
+
+    wechatLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('微信联系方式：19302871359');
+    });
+
+    closeModal.addEventListener('click', () => {
+      contactModal.classList.add('hidden');
+    });
+
+    confirmContact.addEventListener('click', () => {
+      contactModal.classList.add('hidden');
+    });
+
+    // 点击弹窗外部关闭
+    contactModal.addEventListener('click', (e) => {
+      if (e.target === contactModal) {
+        contactModal.classList.add('hidden');
+      }
+    });
+
+    // 步骤导航
+    document.getElementById('to-step-2').addEventListener('click', () => {
+      if (validatePersonalInfo()) {
+        goToStep(2);
+      }
+    });
+
+    document.getElementById('back-to-step-1').addEventListener('click', () => {
+      goToStep(1);
+    });
+
+    document.getElementById('calculate-bmi').addEventListener('click', calculateBMI);
+    document.getElementById('prev-question').addEventListener('click', showPrevQuestion);
+    document.getElementById('next-question').addEventListener('click', showNextQuestion);
+    document.getElementById('restart-test').addEventListener('click', restartTest);
+    document.getElementById('download-result').addEventListener('click', downloadResultImage);
+
+    // 验证个人信息
+    function validatePersonalInfo() {
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const gender = document.querySelector('input[name="gender"]:checked');
+
+      if (!name) {
+        alert('请输入您的姓名');
+        return false;
+      }
+
+      if (!age || age < 1 || age > 120) {
+        alert('请输入有效的年龄');
+        return false;
+      }
+
+      if (!gender) {
+        alert('请选择您的性别');
+        return false;
+      }
+
+      return true;
+    }
+
+    // 切换步骤
+    function goToStep(step) {
+      // 隐藏所有步骤
+      step1.classList.add('hidden');
+      step2.classList.add('hidden');
+      step3.classList.add('hidden');
+      step4.classList.add('hidden');
+
+      // 重置所有指示器
+      for (let i = 1; i <= 4; i++) {
+        const indicator = document.getElementById(`step-indicator-${i}`);
+        indicator.querySelector('div').classList.remove('bg-primary', 'text-white');
+        indicator.querySelector('div').classList.add('bg-gray-300', 'text-gray-600');
+      }
+
+      // 更新进度条
+      if (step > 1) {
+        document.getElementById(`progress-${step-1}-${step}`).style.width = '100%';
+      }
+
+      // 显示当前步骤并更新指示器
+      if (step === 1) {
+        step1.classList.remove('hidden');
+      } else if (step === 2) {
+        step2.classList.remove('hidden');
+      } else if (step === 3) {
+        step3.classList.remove('hidden');
+        showQuestion(currentQuestion);
+      } else if (step === 4) {
+        step4.classList.remove('hidden');
+        calculateResult();
+      }
+
+      // 更新当前步骤指示器
+      const currentIndicator = document.getElementById(`step-indicator-${step}`);
+      currentIndicator.querySelector('div').classList.remove('bg-gray-300', 'text-gray-600');
+      currentIndicator.querySelector('div').classList.add('bg-primary', 'text-white');
+
+      currentStep = step;
+    }
+
+    // 计算BMI
+    function calculateBMI() {
+      height = parseFloat(document.getElementById('height').value);
+      weight = parseFloat(document.getElementById('weight').value);
+
+      if (isNaN(height) || height <= 0 || height > 250) {
+        alert('请输入有效的身高');
+        return;
+      }
+
+      if (isNaN(weight) || weight <= 0 || weight > 300) {
+        alert('请输入有效的体重');
+        return;
+      }
+
+      // 计算BMI
+      bmiValue = (weight / ((height / 100) ** 2)).toFixed(1);
+      
+      // 显示结果
+      document.getElementById('bmi-value').textContent = bmiValue;
+      
+      let category = '';
+      if (bmiValue < 18.5) {
+        category = '偏瘦：您的体重低于健康范围，建议适当增加营养摄入。';
+      } else if (bmiValue < 24) {
+        category = '正常：您的体重在健康范围内，继续保持良好的生活习惯。';
+      } else if (bmiValue < 28) {
+        category = '超重：您的体重略高于健康范围，建议适当控制饮食并增加运动。';
+      } else {
+        category = '肥胖：您的体重明显高于健康范围，建议采取积极的体重管理措施。';
+      }
+      
+      document.getElementById('bmi-category').textContent = category;
+      document.getElementById('bmi-result').classList.remove('hidden');
+      
+      // 延迟后自动进入下一步
+      setTimeout(() => {
+        goToStep(3);
+      }, 1000);
+    }
+
+    // 显示问题
+    function showQuestion(index) {
+      if (index < 0 || index >= questions.length) return;
+      
+      const question = questions[index];
+      questionNumber.textContent = question.id;
+      
+      let optionsHtml = '';
+      question.options.forEach(option => {
+        optionsHtml += `
+          <label class="block p-3 border border-gray-200 rounded-lg mb-2 cursor-pointer hover:bg-tertiary/50 transition-colors">
+            <input type="radio" name="question-${question.id}" value="${option.value}" class="form-radio text-primary h-4 w-4 mr-2 question-option">
+            ${option.text}
+          </label>
+        `;
+      });
+      
+      questionContainer.innerHTML = `
+        <h3 class="text-xl font-medium mb-4">${question.text}</h3>
+        <div class="question-options">
+          ${optionsHtml}
+        </div>
+      `;
+      
+      // 如果有保存的答案，选中它
+      if (answers[index] !== undefined) {
+        const radio = document.querySelector(`input[name="question-${question.id}"][value="${answers[index]}"]`);
+        if (radio) radio.checked = true;
+      }
+      
+      // 为选项添加点击事件，实现自动跳转
+      document.querySelectorAll('.question-option').forEach(option => {
+        option.addEventListener('change', function() {
+          // 短暂延迟，让用户看到选择效果
+          setTimeout(() => {
+            saveAnswer(currentQuestion);
+            
+            if (currentQuestion === questions.length - 1) {
+              // 最后一题，计算结果
+              goToStep(4);
+            } else {
+              currentQuestion++;
+              showQuestion(currentQuestion);
+            }
+          }, 300);
+        });
+      });
+      
+      // 更新按钮状态
+      prevQuestionBtn.disabled = index === 0;
+      if (index === 0) {
+        prevQuestionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        prevQuestionBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+      
+      nextQuestionBtn.textContent = index === questions.length - 1 ? '查看结果' : '下一题';
+      nextQuestionBtn.innerHTML = index === questions.length - 1 ? 
+        '查看结果 <i class="fa fa-check ml-2"></i>' : 
+        '下一题 <i class="fa fa-arrow-right ml-2"></i>';
+    }
+
+    // 上一题
+    function showPrevQuestion() {
+      saveAnswer(currentQuestion);
+      currentQuestion--;
+      showQuestion(currentQuestion);
+    }
+
+    // 下一题
+    function showNextQuestion() {
+      saveAnswer(currentQuestion);
+      
+      if (currentQuestion === questions.length - 1) {
+        // 最后一题，计算结果
+        goToStep(4);
+      } else {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+      }
+    }
+
+    // 保存答案
+    function saveAnswer(index) {
+      const question = questions[index];
+      const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
+      
+      if (selectedOption) {
+        answers[index] = parseInt(selectedOption.value);
+      } else {
+        // 如果没有选择，默认为0
+        answers[index] = 0;
+      }
+    }
+
+    // 计算结果
+    function calculateResult() {
+      // 计算各类型总分
+      const typeScores = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+      
+      questions.forEach((question, index) => {
+        typeScores[question.type] += answers[index] || 0;
+      });
+      
+      // 找出最高分的类型
+      let maxScore = 0;
+      let resultType = 1;
+      
+      for (const type in typeScores) {
+        if (typeScores[type] > maxScore) {
+          maxScore = typeScores[type];
+          resultType = parseInt(type);
+        }
+      }
+      
+      // 获取个人信息
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const dietPreference = document.getElementById('diet-preference').options[document.getElementById('diet-preference').selectedIndex].text;
+      const expectedBody = document.getElementById('expected-body').options[document.getElementById('expected-body').selectedIndex].text;
+      
+      // 计算目标体重
+      const heightM = height / 100;
+      const healthyWeight = (24 * heightM * heightM).toFixed(1);
+      const perfectWeight = (22.5 * heightM * heightM).toFixed(1);
+      const photogenicWeight = (22 * heightM * heightM).toFixed(1);
+      
+      // 计算需要减少的体重
+      let weightToLose = 0;
+      if (weight > healthyWeight) {
+        weightToLose = (weight - healthyWeight).toFixed(1);
+      }
+      
+      // 获取对应方案
+      const plan = plans[resultType];
+      
+      // 生成体重管理计划
+      let weightPlan = '';
+      if (weightToLose > 0) {
+        const weeks = Math.ceil(weightToLose / 0.5); // 每周减重0.5kg
+        weightPlan = `
+          <div class="p-4 bg-tertiary rounded-lg border border-secondary/30 mb-6">
+            <h3 class="font-medium text-lg mb-3">良性体重管理计划</h3>
+            <p>1. 建议每周减重0.5-1公斤，循序渐进，健康减重。</p>
+            <p>2. 预计${weeks}周可达到健康体重目标（BMI 24）。</p>
+            <p>3. 每月进行一次体重和身体状况评估，根据进展调整计划。</p>
+            <p>4. 保持规律作息，保证充足睡眠，有助于体重管理。</p>
+            <p>5. 保持积极心态，避免因短期效果不明显而放弃。</p>
+          </div>
+        `;
+      } else {
+        weightPlan = `
+          <div class="p-4 bg-tertiary rounded-lg border border-secondary/30 mb-6">
+            <h3 class="font-medium text-lg mb-3">体重保持计划</h3>
+            <p>1. 您的体重处于健康范围，建议保持当前良好的生活习惯。</p>
+            <p>2. 定期监测体重变化，避免波动过大。</p>
+            <p>3. 保持规律运动和均衡饮食，维持身体健康状态。</p>
+          </div>
+        `;
+      }
+      
+      // 生成结果HTML
+      const resultHtml = `
+        <div class="p-5 bg-primary/10 rounded-lg mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">个人基本信息</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <p><span class="font-medium">姓名：</span>${name}</p>
+            <p><span class="font-medium">年龄：</span>${age}岁</p>
+            <p><span class="font-medium">性别：</span>${gender === 'male' ? '男' : '女'}</p>
+            <p><span class="font-medium">饮食偏好：</span>${dietPreference}</p>
+            <p><span class="font-medium">预期状态：</span>${expectedBody}</p>
+            <p><span class="font-medium">BMI指数：</span>${bmiValue}</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">体质测评结果</h3>
+          <div class="p-4 border-2 border-primary/30 rounded-lg">
+            <p class="text-lg"><span class="font-medium">您的体质类型为：</span><span class="text-primary font-bold">${plan.name}</span>，对应方案${resultType}号</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">体重目标</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-white rounded-lg shadow border border-gray-200 card-hover">
+              <h4 class="font-medium text-center mb-2">健康体重</h4>
+              <p class="text-center text-lg font-bold text-primary">${healthyWeight} kg</p>
+              <p class="text-center text-sm text-gray-600">BMI 24</p>
+            </div>
+            <div class="p-4 bg-white rounded-lg shadow border border-gray-200 card-hover">
+              <h4 class="font-medium text-center mb-2">完美身材</h4>
+              <p class="text-center text-lg font-bold text-primary">${perfectWeight} kg</p>
+              <p class="text-center text-sm text-gray-600">BMI 22.5</p>
+            </div>
+            <div class="p-4 bg-white rounded-lg shadow border border-gray-200 card-hover">
+              <h4 class="font-medium text-center mb-2">上镜身材</h4>
+              <p class="text-center text-lg font-bold text-primary">${photogenicWeight} kg</p>
+              <p class="text-center text-sm text-gray-600">BMI 22</p>
+            </div>
+          </div>
+          ${weightToLose > 0 ? `<p class="mt-4 text-center"><span class="font-medium">建议减少体重：</span><span class="text-primary font-bold">${weightToLose} kg</span></p>` : ''}
+        </div>
+        
+        ${weightPlan}
+        
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">饮食建议</h3>
+          <div class="p-4 bg-white rounded-lg shadow border border-gray-200">
+            <p class="whitespace-pre-line">${plan.diet}</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">运动建议</h3>
+          <div class="p-4 bg-white rounded-lg shadow border border-gray-200">
+            <p class="whitespace-pre-line">${plan.exercise}</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-primary mb-3">穴位按摩建议</h3>
+          <div class="p-4 bg-white rounded-lg shadow border border-gray-200">
+            <p class="whitespace-pre-line">${plan.acupoint}</p>
+          </div>
+        </div>
+      `;
+      
+      // 生成用于图片的结果HTML（简化版）
+      const imageResultHtml = `
+        <div class="text-center mb-4">
+          <h2 class="text-xl font-bold text-primary">元宇说&鲡喵烘焙体重管理测评报告</h2>
+          <p class="text-sm text-gray-600">${new Date().toLocaleDateString()}</p>
+        </div>
+        
+        <div class="border-t border-gray-200 pt-3 mb-3">
+          <h3 class="font-medium mb-2">个人信息</h3>
+          <p><span class="text-gray-600">姓名：</span>${name}</p>
+          <p><span class="text-gray-600">年龄：</span>${age}岁</p>
+          <p><span class="text-gray-600">性别：</span>${gender === 'male' ? '男' : '女'}</p>
+          <p><span class="text-gray-600">BMI指数：</span>${bmiValue}</p>
+        </div>
+        
+        <div class="border-t border-gray-200 pt-3 mb-3">
+          <h3 class="font-medium mb-2">测评结果</h3>
+          <p>体质类型：<span class="font-bold text-primary">${plan.name}</span>（方案${resultType}号）</p>
+          <p>健康体重目标：${healthyWeight} kg (BMI 24)</p>
+          ${weightToLose > 0 ? `<p>建议减少体重：${weightToLose} kg</p>` : ''}
+        </div>
+        
+        <div class="border-t border-gray-200 pt-3 mb-3">
+          <h3 class="font-medium mb-2">饮食建议</h3>
+          <p class="text-sm">${plan.diet.replace(/<br>/g, ' ')}</p>
+        </div>
+        
+        <div class="border-t border-gray-200 pt-3 mb-3">
+          <h3 class="font-medium mb-2">运动建议</h3>
+          <p class="text-sm">${plan.exercise.replace(/<br>/g, ' ')}</p>
+        </div>
+      `;
+      
+      // 显示结果
+      resultContainer.innerHTML = resultHtml;
+      resultForImage.innerHTML = imageResultHtml;
+      resultImageContainer.classList.remove('hidden');
+    }
+
+    // 下载结果图片
+    function downloadResultImage() {
+      html2canvas(document.getElementById('result-for-image')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = '体重管理测评报告.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    // 重新测评
+    function restartTest() {
+      // 重置变量
+      currentStep = 1;
+      currentQuestion = 0;
+      answers = [];
+      bmiValue = null;
+      height = null;
+      weight = null;
+      
+      // 重置表单
+      document.getElementById('personal-info-form').reset();
+      document.getElementById('bmi-form').reset();
+      document.getElementById('bmi-result').classList.add('hidden');
+      
+      // 重置进度条
+      document.getElementById('progress-1-2').style.width = '0';
+      document.getElementById('progress-2-3').style.width = '0';
+      document.getElementById('progress-3-4').style.width = '0';
+      
+      // 回到第一步
+      goToStep(1);
+    }
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      goToStep(1);
+    });
+  </script>
+</body>
+</html>
